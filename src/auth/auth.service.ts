@@ -11,7 +11,10 @@ import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
+    constructor(
+        private prisma: PrismaService, 
+        private jwt: JwtService, 
+        private config: ConfigService) {}
     async signup(dto: AuthDto) {
         const hash = await argon.hash(dto.password);
         try {
@@ -28,7 +31,7 @@ export class AuthService {
             if (error instanceof PrismaClientKnownRequestError){
                 if (error.code == "P2002"){
                     throw new ForbiddenException(
-                        "credentials taken"
+                        "credentials taken prisma a a a"
                     );
                 }
             }
@@ -45,30 +48,31 @@ export class AuthService {
 
         if (!user) 
             throw new ForbiddenException(
-            "Credentials incorrect",
+            "Credentials incorrect: user exists ",
             );
         
         const pwMatches = await argon.verify(user.hash, dto.password);
         if (!pwMatches)
             throw new ForbiddenException(
-                "Credentials incorrect",
+                "Credentials incorrect: password not correct",
                 );
         delete user.hash;
         // return user;
         return this.signToken(user.id, user.email);
     }
 
-    async signToken(userId:number, email:string): Promise<string> {
+    async signToken(
+        userId: number,
+        email: string,
+    ): Promise<string>{
         const payload = {
             sub: userId,
             email
-        };
-        const secret = this.config.get("JWT_SECRET")
-        return this.jwt.signAsync(payload, {
-            expiresIn: "15m",
-            secret:secret,
         }
-
-        )
+        const secret = this.config.get("JWT_SECRET")
+        return this.jwt.signAsync(payload,{
+            expiresIn: "15m",
+            secret: secret,
+        })
     }
 }
