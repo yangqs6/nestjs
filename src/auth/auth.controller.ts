@@ -8,15 +8,13 @@ export class AuthController {
     constructor(private authService: AuthService) {}
     // body decorator vs Req decorator 
     @Post('signup')
-    signup(@Body() dto: AuthDto) {
-        console.log(dto.email);
-        console.log(dto.password)
-        return this.authService.signup();
+    signin(@Body() dto: AuthDto){
+        // console.log(1)
+        return this.authService.signup(dto);
     }
 
     @Post('signin')
-    signin(@Req() req: Request) {
-        console.log(req.body);
+    signup(@Body() dto: AuthDto) {
         return this.authService.signin();
     }
 }
