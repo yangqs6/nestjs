@@ -16,21 +16,6 @@ export class JwtStrategy extends PassportStrategy(Strategy,"jwt"){
     }
 
 
-//    async validate(payload: {sub:number; email:string;}){
-//         console.log("hihihihi")
-//         const user = 
-//             await this.prisma.user.findUnique({
-//             where:{
-//                 id: payload.sub
-//             }
-//         })
-//         delete user.hash;
-//         console.log("hihihihi")
-//         console.log(user)
-//         return user
-//     }
-
-
     async validate(payload: { sub: number; email: string }) {
         // console.log(req)
         console.log('Payload:', payload);
@@ -45,6 +30,8 @@ export class JwtStrategy extends PassportStrategy(Strategy,"jwt"){
         throw new UnauthorizedException();
         }
 
+        delete user.hash;
+        
         // req.user = user; // 设置 req.user
         return user;
         // return "hello"
